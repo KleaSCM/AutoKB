@@ -1,1 +1,21 @@
+def on_hotkey(hotkey):
+    # Get the file path associated with the hotkey
+    filepath = keybindings.get(hotkey)
+    if filepath:
+        if filepath.endswith('.txt'):
+            # Paste content from the txt doc into the active window
+            paste_text(filepath)
+        elif filepath.endswith('.csv'):
+            # Process the CSV file and save as XLSX
+            columns_to_delete = [0, 1, 2, 3, 4, 5, 6, 8, 12, 15, 16, 17, 18, 81, 19,
+                                20, 25, 27, 29, 30, 33, 34, 42, 44, 45, 47, 48, 50,
+                                51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 62, 63,
+                                64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75,
+                                76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 88, 89,
+                                90, 91, 94, 95, 99, 100, 102, 103, 104, 106, 107, 108, 109]
+            output_file = 'output.xlsx'  # Output XLSX file
+            process_csv_and_save_as_xlsx(filepath, columns_to_delete, output_file)
 
+# Register the hotkey callback function for each hotkey combination
+for hotkey in keybindings.keys():
+    keyboard.add_hotkey(hotkey, on_hotkey, args=(hotkey,))
