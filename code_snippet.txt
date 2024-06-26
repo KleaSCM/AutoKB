@@ -1,0 +1,81 @@
+import keyboard
+import pyperclip
+import pandas as pd
+import pyautogui
+from openpyxl import Workbook
+from openpyxl.styles import Border, Side, PatternFill, Font
+from openpyxl.utils.dataframe import dataframe_to_rows
+
+# Define a dictionary to store key combinations and their corresponding file paths
+keybindings = {
+    'Ctrl+shift+1': r'C:\Users\Kliea\Documents\Dev\Proj\Python\AutoKB\Scripts\DNAI Cultural Buisiness.txt',
+    'ctrl+shift+alt+0': r'C:\Users\Kliea\Documents\Dev\Proj\Python\AutoKB\Reports\216-CDPJobPlanMonitoring-20240428.csv',
+    # Add other keybindings...
+}
+
+def paste_text(filepath):
+    """
+    Read content from a text file and paste it into the active window.
+    
+    :param filepath: Path to the text file.
+    """
+    with open(filepath, 'r') as file:
+        content = file.read().strip()  # Strip trailing newline characters
+    pyperclip.copy(content)  # Copy content to clipboard
+    pyautogui.hotkey('ctrl', 'v')  # Paste content from clipboard
+
+def process_csv_and_save_as_xlsx(file_path, columns_to_delete, output_file):
+    """
+    Process a CSV file, delete specified columns, and save it as an Excel file with formatting.
+    
+    :param file_path: Path to the CSV file.
+    :param columns_to_delete: List of column indices to delete.
+    :param output_file: Path to save the output Excel file.
+    """
+    df = pd.read_csv(file_path)
+
+    # Delete specified columns
+    df.drop(columns=df.columns[columns_to_delete], inplace=True)
+
+    # Create a workbook and convert DataFrame to Excel
+    wb = Workbook()
+    ws = wb.active
+    for r in dataframe_to_rows(df, index=False, header=True):
+        ws.append(r)
+
+    # Apply thin borders to all cells
+    thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+        for cell in row:
+            cell.border = thin_border
+
+    # Apply thick outside border and styling to the first row
+    thick_border = Border(top=Side(style='thick'), left=Side(style='thick'), right=Side(style='thick'), bottom=Side(style='thick'))
+    for cell in ws[1]:
+        cell.border = thick_border
+        cell.fill = PatternFill(start_color='3366FF', end_color='3366FF', fill_type='solid')
+        cell.font = Font(bold=True)
+
+    wb.save(output_file)
+
+def on_hotkey(hotkey):
+    """
+    Callback function to handle hotkey events and perform actions based on the file type.
+    
+    :param hotkey: The hotkey combination pressed.
+    """
+    filepath = keybindings.get(hotkey)
+    if filepath:
+        if filepath.endswith('.txt'):
+            paste_text(filepath)
+        elif filepath.endswith('.csv'):
+            columns_to_delete = [0, 1, 2, 3, 4, 5, 6, 8, 12, 15, 16, 17, 18, 81, 19, 20, 25, 27, 29, 30, 33, 34, 42, 44, 45, 47, 48, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 91, 94, 95, 99, 100, 102, 103, 104, 106, 107, 108, 109]
+            output_file = 'output.xlsx'
+            process_csv_and_save_as_xlsx(filepath, columns_to_delete, output_file)
+
+# Register the hotkey callback function for each hotkey combination
+for hotkey in keybindings.keys():
+    keyboard.add_hotkey(hotkey, on_hotkey, args=(hotkey,))
+
+# Start the keyboard listener for hotkey events
+keyboard.wait('esc')  # Press 'Esc' to stop
