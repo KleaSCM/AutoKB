@@ -8,8 +8,10 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Define a dictionary to store key combinations and their corresponding file paths
 keybindings = {
-    'Ctrl+shift+1': r'C:\Users\Kliea\Documents\Dev\Proj\Python\AutoKB\Scripts\DNAI Cultural Buisiness.txt',
-    'ctrl+shift+alt+0': r'C:\Users\Kliea\Documents\Dev\Proj\Python\AutoKB\Reports\216-CDPJobPlanMonitoring-20240428.csv',
+    'Ctrl+shift+1': r'C:\Users\Kliea\Documents\
+Dev\Proj\Python\AutoKB\Scripts\DNAI Cultural Buisiness.txt',
+    'ctrl+shift+alt+0': r'C:\Users\Kliea\Documents\
+Dev\Proj\Python\AutoKB\Reports\216-CDPJobPlanMonitoring-20240428.csv',
     # Add other keybindings...
 }
 
@@ -44,13 +46,16 @@ def process_csv_and_save_as_xlsx(file_path, columns_to_delete, output_file):
         ws.append(r)
 
     # Apply thin borders to all cells
-    thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
-    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+    thin_border = Border(left=Side(style='thin'), right=Side(style='thin'),
+top=Side(style='thin'), bottom=Side(style='thin'))
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row,
+min_col=1, max_col=ws.max_column):
         for cell in row:
             cell.border = thin_border
 
     # Apply thick outside border and styling to the first row
-    thick_border = Border(top=Side(style='thick'), left=Side(style='thick'), right=Side(style='thick'), bottom=Side(style='thick'))
+    thick_border = Border(top=Side(style='thick'), left=Side(style='thick'), 
+right=Side(style='thick'), bottom=Side(style='thick'))
     for cell in ws[1]:
         cell.border = thick_border
         cell.fill = PatternFill(start_color='3366FF', end_color='3366FF', fill_type='solid')
@@ -69,7 +74,11 @@ def on_hotkey(hotkey):
         if filepath.endswith('.txt'):
             paste_text(filepath)
         elif filepath.endswith('.csv'):
-            columns_to_delete = [0, 1, 2, 3, 4, 5, 6, 8, 12, 15, 16, 17, 18, 81, 19, 20, 25, 27, 29, 30, 33, 34, 42, 44, 45, 47, 48, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 91, 94, 95, 99, 100, 102, 103, 104, 106, 107, 108, 109]
+            columns_to_delete = [0, 1, 2, 3, 4, 5, 6, 8, 12, 15, 16, 17, 18,
+81, 19, 20, 25, 27, 29, 30, 33, 34, 42, 44, 45, 47, 48, 50, 51, 52, 53, 54,
+55, 56, 57, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
+74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 91, 94, 95, 
+99, 100, 102, 103, 104, 106, 107, 108, 109]
             output_file = 'output.xlsx'
             process_csv_and_save_as_xlsx(filepath, columns_to_delete, output_file)
 
